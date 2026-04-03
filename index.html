@@ -1,97 +1,123 @@
 <!DOCTYPE html><html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediCare HMS</title>
-<style>
-body{font-family:Arial;margin:0}
-.login,.register{display:flex;flex-direction:column;gap:10px;max-width:300px;margin:100px auto}
-input,button{padding:10px}
-#dashboard{display:none;padding:20px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare HMS - Hospital Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #10b981;
+            --warning: #f59e0b; --danger: #ef4444; --dark: #1e293b;
+            --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+            --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569;
+            --white: #ffffff; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1); --radius: 12px;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--dark); }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 20px; }
+        .login-box { background: var(--white); padding: 50px; border-radius: var(--radius); box-shadow: var(--shadow-lg); width: 100%; max-width: 450px; }
+        .login-logo { text-align: center; margin-bottom: 30px; }
+        .login-logo i { font-size: 60px; color: var(--primary); margin-bottom: 15px; }
+        .login-logo h1 { font-size: 28px; color: var(--dark); font-weight: 700; }
+        .login-logo p { color: var(--gray-500); font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--gray-600); font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 15px; }
+        .btn { padding: 14px 28px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: var(--white); width: 100%; }
+        .dashboard { display: none; min-height: 100vh; }
+    </style>
 </head>
-<body><div id="auth">
-    <div class="login">
-        <h2>Login</h2>
-        <input id="loginEmail" placeholder="Email">
-        <input id="loginPassword" type="password" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <p>No account? <a href="#" onclick="showRegister()">Register</a></p>
-    </div><div class="register" style="display:none">
-    <h2>Register</h2>
-    <input id="regEmail" placeholder="Email">
-    <input id="regPassword" type="password" placeholder="Password">
-    <button onclick="register()">Register</button>
-    <p><a href="#" onclick="showLogin()">Back to login</a></p>
-</div>
-
-</div><div id="dashboard">
-    <h1>Dashboard</h1>
-    <div id="data"></div>
-    <button onclick="logout()">Logout</button>
+<body><div id="loginPage" class="login-container">
+    <div class="login-box">
+        <div class="login-logo">
+            <i class="fas fa-hospital-user"></i>
+            <h1>MediCare HMS</h1>
+            <p>Hospital Management System</p>
+        </div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        </form>
+        <p style="margin-top:15px; text-align:center;">
+            No account? <a href="#" onclick="showRegister()">Register</a>
+        </p>
+    </div>
+</div><div id="registerPage" class="login-container" style="display:none;">
+    <div class="login-box">
+        <h2 style="text-align:center; margin-bottom:20px;">Register</h2>
+        <input id="regEmail" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;">
+        <input id="regPassword" type="password" placeholder="Password" style="width:100%;padding:12px;margin-bottom:10px;">
+        <button onclick="register()" class="btn btn-primary">Create Account</button>
+        <p style="margin-top:15px;text-align:center;">
+            <a href="#" onclick="showLogin()">Back to Login</a>
+        </p>
+    </div>
+</div><div id="dashboard" class="dashboard">
+    <h1 style="padding:20px;">Dashboard</h1>
+    <p style="padding:20px;" id="userInfo"></p>
+    <button onclick="logout()" style="margin:20px;">Logout</button>
 </div><script>
 function showRegister(){
-    document.querySelector('.login').style.display='none';
-    document.querySelector('.register').style.display='flex';
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('registerPage').style.display='flex';
 }
 function showLogin(){
-    document.querySelector('.register').style.display='none';
-    document.querySelector('.login').style.display='flex';
+    document.getElementById('registerPage').style.display='none';
+    document.getElementById('loginPage').style.display='flex';
 }
 
 function register(){
     const email=document.getElementById('regEmail').value;
     const password=document.getElementById('regPassword').value;
+    if(!email||!password){alert('Fill all');return}
 
-    if(!email || !password){alert('Fill all');return}
-
-    const users=JSON.parse(localStorage.getItem('users')||'[]');
-    users.push({email,password,verified:false});
+    let users=JSON.parse(localStorage.getItem('users')||'[]');
+    users.push({email,password});
     localStorage.setItem('users',JSON.stringify(users));
 
-    alert('Registered! Now verify email (simulated)');
-
-    // simulate email verification
-    users[users.length-1].verified=true;
-    localStorage.setItem('users',JSON.stringify(users));
-
+    alert('Registered successfully');
     showLogin();
 }
 
-function login(){
+document.getElementById('loginForm').addEventListener('submit',function(e){
+    e.preventDefault();
+
     const email=document.getElementById('loginEmail').value;
     const password=document.getElementById('loginPassword').value;
 
     const users=JSON.parse(localStorage.getItem('users')||'[]');
     const user=users.find(u=>u.email===email && u.password===password);
 
-    if(!user){alert('Invalid');return}
-    if(!user.verified){alert('Verify email first');return}
+    if(!user){alert('Invalid credentials or register first');return}
 
     localStorage.setItem('currentUser',JSON.stringify(user));
-    showDashboard();
-}
-
-function showDashboard(){
-    document.getElementById('auth').style.display='none';
+    document.getElementById('loginPage').style.display='none';
     document.getElementById('dashboard').style.display='block';
-
-    const user=JSON.parse(localStorage.getItem('currentUser'));
-
-    document.getElementById('data').innerHTML=`
-        <p>Email: ${user.email}</p>
-        <p>Status: Verified User</p>
-        <p>Patients: 120</p>
-        <p>Doctors: 15</p>
-        <p>Appointments: 32</p>
-    `;
-}
+    document.getElementById('userInfo').innerText='Welcome '+user.email;
+});
 
 function logout(){
     localStorage.removeItem('currentUser');
     location.reload();
 }
 
-if(localStorage.getItem('currentUser')) showDashboard();
+if(localStorage.getItem('currentUser')){
+    const user=JSON.parse(localStorage.getItem('currentUser'));
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    document.getElementById('userInfo').innerText='Welcome '+user.email;
+}
 </script></body>
 </html>
