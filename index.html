@@ -1,70 +1,97 @@
 <!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediCare HMS - Hospital Management System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; margin:0; }
-        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#2563eb,#1d4ed8); }
-        .login-box { background:#fff; padding:40px; border-radius:12px; width:100%; max-width:400px; }
-        input, select { width:100%; padding:12px; margin:10px 0; }
-        button { width:100%; padding:12px; background:#2563eb; color:#fff; border:none; cursor:pointer; }
-        #dashboard { display:none; padding:20px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCare HMS</title>
+<style>
+body{font-family:Arial;margin:0}
+.login,.register{display:flex;flex-direction:column;gap:10px;max-width:300px;margin:100px auto}
+input,button{padding:10px}
+#dashboard{display:none;padding:20px}
+</style>
 </head>
-<body><div id="loginPage" class="login-container">
-    <div class="login-box">
-        <h2>MediCare HMS</h2>
-        <form id="loginForm">
-            <input type="email" id="loginEmail" value="admin@medicare.com" required>
-            <input type="password" id="loginPassword" value="admin123" required>
-            <select id="loginRole">
-                <option value="Admin">Administrator</option>
-                <option value="Doctor">Doctor</option>
-            </select>
-            <button type="submit">Sign In</button>
-        </form>
-    </div>
+<body><div id="auth">
+    <div class="login">
+        <h2>Login</h2>
+        <input id="loginEmail" placeholder="Email">
+        <input id="loginPassword" type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p>No account? <a href="#" onclick="showRegister()">Register</a></p>
+    </div><div class="register" style="display:none">
+    <h2>Register</h2>
+    <input id="regEmail" placeholder="Email">
+    <input id="regPassword" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+    <p><a href="#" onclick="showLogin()">Back to login</a></p>
+</div>
+
 </div><div id="dashboard">
     <h1>Dashboard</h1>
-    <p id="welcomeText"></p>
+    <div id="data"></div>
     <button onclick="logout()">Logout</button>
 </div><script>
-const form = document.getElementById("loginForm");
+function showRegister(){
+    document.querySelector('.login').style.display='none';
+    document.querySelector('.register').style.display='flex';
+}
+function showLogin(){
+    document.querySelector('.register').style.display='none';
+    document.querySelector('.login').style.display='flex';
+}
 
-form.addEventListener("submit", function(e){
-    e.preventDefault();
+function register(){
+    const email=document.getElementById('regEmail').value;
+    const password=document.getElementById('regPassword').value;
 
-    const email = document.getElementById("loginEmail").value;
-    const password = document.getElementById("loginPassword").value;
-    const role = document.getElementById("loginRole").value;
+    if(!email || !password){alert('Fill all');return}
 
-    if(email === "admin@medicare.com" && password === "admin123"){
-        localStorage.setItem("user", JSON.stringify({email, role}));
-        showDashboard();
-    } else {
-        alert("Wrong credentials");
-    }
-});
+    const users=JSON.parse(localStorage.getItem('users')||'[]');
+    users.push({email,password,verified:false});
+    localStorage.setItem('users',JSON.stringify(users));
+
+    alert('Registered! Now verify email (simulated)');
+
+    // simulate email verification
+    users[users.length-1].verified=true;
+    localStorage.setItem('users',JSON.stringify(users));
+
+    showLogin();
+}
+
+function login(){
+    const email=document.getElementById('loginEmail').value;
+    const password=document.getElementById('loginPassword').value;
+
+    const users=JSON.parse(localStorage.getItem('users')||'[]');
+    const user=users.find(u=>u.email===email && u.password===password);
+
+    if(!user){alert('Invalid');return}
+    if(!user.verified){alert('Verify email first');return}
+
+    localStorage.setItem('currentUser',JSON.stringify(user));
+    showDashboard();
+}
 
 function showDashboard(){
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
+    document.getElementById('auth').style.display='none';
+    document.getElementById('dashboard').style.display='block';
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    document.getElementById("welcomeText").innerText = "Welcome " + user.role;
+    const user=JSON.parse(localStorage.getItem('currentUser'));
+
+    document.getElementById('data').innerHTML=`
+        <p>Email: ${user.email}</p>
+        <p>Status: Verified User</p>
+        <p>Patients: 120</p>
+        <p>Doctors: 15</p>
+        <p>Appointments: 32</p>
+    `;
 }
 
 function logout(){
-    localStorage.removeItem("user");
+    localStorage.removeItem('currentUser');
     location.reload();
 }
 
-// Auto login if already saved
-if(localStorage.getItem("user")){
-    showDashboard();
-}
+if(localStorage.getItem('currentUser')) showDashboard();
 </script></body>
 </html>
