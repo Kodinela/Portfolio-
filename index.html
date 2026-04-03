@@ -227,3 +227,29 @@
             <div class="modal-body" id="modalBody">
                 <!-- Modal content -->
             </div>
+            <script>
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    const role = document.getElementById("loginRole").value;
+
+    // Demo credentials (kama ulivyoandika kwenye form)
+    if (email === "admin@medicare.com" && password === "admin123") {
+        // Ficha login
+        document.getElementById("loginPage").style.display = "none";
+
+        // Onyesha dashboard
+        document.getElementById("dashboard").style.display = "block";
+
+        // Set user info
+        document.getElementById("userName").innerText = "Administrator";
+        document.getElementById("userRole").innerText = role;
+        document.getElementById("userAvatar").innerText = "A";
+
+    } else {
+        alert("Invalid login credentials!");
+    }
+});
+            </script>
