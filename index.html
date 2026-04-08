@@ -1,265 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MediCare HMS</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-    font-family:'Inter',sans-serif;
-    background:#f1f5f9;
-}
-
-/* AUTH UI */
-.auth-container{
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-}
-
-.auth-box{
-    background:white;
-    padding:35px;
-    border-radius:12px;
-    width:100%;
-    max-width:420px;
-    box-shadow:0 10px 20px rgba(0,0,0,0.15);
-}
-
-.auth-box h1{
-    text-align:center;
-    margin-bottom:5px;
-}
-
-.auth-box p{
-    text-align:center;
-    color:#64748b;
-    margin-bottom:20px;
-}
-
-.form-group{
-    margin-bottom:15px;
-}
-
-.form-group label{
-    display:block;
-    margin-bottom:5px;
-    font-size:14px;
-}
-
-.form-group input,
-.form-group select{
-    width:100%;
-    padding:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
-}
-
-.btn{
-    width:100%;
-    padding:12px;
-    border:none;
-    background:#2563eb;
-    color:white;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.link{
-    color:#2563eb;
-    cursor:pointer;
-    font-weight:500;
-}
-
-.auth-content{display:none;}
-.auth-content.active{display:block;}
-
-#dashboard{
-    display:none;
-    padding:20px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare HMS - Hospital Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #10b981;
+            --warning: #f59e0b; --danger: #ef4444; --dark: #1e293b;
+            --gray-100: #f1f5f9; --gray-200: #e2e8f0; --gray-300: #cbd5e1;
+            --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569;
+            --white: #ffffff; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1); --radius: 12px;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--dark); }
+        
+        /* Login Styles */
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); padding: 20px; }
+        .login-box { background: var(--white); padding: 50px; border-radius: var(--radius); box-shadow: var(--shadow-lg); width: 100%; max-width: 450px; }
+        .login-logo { text-align: center; margin-bottom: 30px; }
+        .login-logo i { font-size: 60px; color: var(--primary); margin-bottom: 15px; }
+        .login-logo h1 { font-size: 28px; color: var(--dark); font-weight: 700; }
+        .login-logo p { color: var(--gray-500); font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--gray-600); font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 15px; transition: all 0.3s; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
+        .btn { padding: 14px 28px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: var(--white); width: 100%; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: var(--secondary); color: var(--white); }
+        .btn-danger { background: var(--danger); color: var(--white); }
+        .btn-sm { padding: 8px 16px; font-size: 13px; }
+        
+        /* Dashboard */
+        .dashboard { display: none; min-height: 100vh; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 280px; height: 100vh; background: var(--white); box-shadow: var(--shadow); z-index: 1000; overflow-y: auto; }
+        .sidebar-header { padding: 25px; border-bottom: 1px solid var(--gray-200); }
+        .sidebar-header i { font-size: 32px; color: var(--primary); margin-right: 12px; }
+        .sidebar-header h2 { font-size: 20px; display: inline-block; }
+        .nav-menu { padding: 20px 0; }
+        .nav-item { padding: 14px 25px; display: flex; align-items: center; gap: 12px; color: var(--gray-600); cursor: pointer; transition: all 0.3s; border-left: 3px solid transparent; }
+        .nav-item:hover, .nav-item.active { background: rgba(37,99,235,0.1); color: var(--primary); border-left-color: var(--primary); }
+        .nav-item i { width: 24px; font-size: 18px; }
+        .main-content { margin-left: 280px; min-height: 100vh; }
+        .header { background: var(--white); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; }
+        .header-left h1 { font-size: 24px; }
+        .header-left p { color: var(--gray-500); font-size: 14px; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .user-profile { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: var(--gray-100); border-radius: 50px; cursor: pointer; }
+        .user-avatar { width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 600; }
+        .content-area { padding: 30px; }
+        
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; align-items: center; gap: 20px; }
+        .stat-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .stat-icon.blue { background: rgba(37,99,235,0.1); color: var(--primary); }
+        .stat-icon.green { background: rgba(16,185,129,0.1); color: var(--secondary); }
+        .stat-icon.orange { background: rgba(245,158,11,0.1); color: var(--warning); }
+        .stat-icon.red { background: rgba(239,68,68,0.1); color: var(--danger); }
+        .stat-info h3 { font-size: 28px; margin-bottom: 5px; }
+        
+        /* Cards & Tables */
+        .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 25px; }
+        .card-header { padding: 20px 25px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+        .card-header h3 { font-size: 18px; }
+        .card-body { padding: 25px; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+        th { background: var(--gray-100); font-weight: 600; color: var(--gray-600); font-size: 13px; }
+        tr:hover { background: var(--gray-100); }
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .status-active { background: rgba(16,185,129,0.1); color: var(--secondary); }
+        .status-pending { background: rgba(245,158,11,0.1); color: var(--warning); }
+        .status-completed { background: rgba(37,99,235,0.1); color: var(--primary); }
+        .status-cancelled { background: rgba(239,68,68,0.1); color: var(--danger); }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal { background: var(--white); border-radius: var(--radius); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 20px; }
+        .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-400); }
+        .modal-body { padding: 25px; }
+        .modal-footer { padding: 20px 25px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 12px; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .form-grid .full-width { grid-column: span 2; }
+        .search-bar { display: flex; gap: 15px; margin-bottom: 20px; }
+        .search-input { flex: 1; position: relative; }
+        .search-input i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gray-400); }
+        .search-input input { width: 100%; padding: 12px 16px 12px 45px; border: 2px solid var(--gray-200); border-radius: 8px; }
+        .search-input input:focus { outline: none; border-color: var(--primary); }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 2px solid var(--gray-200); margin-bottom: 20px; }
+        .tab { padding: 12px 24px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .tab.active { border-bottom-color: var(--primary); color: var(--primary); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Action buttons */
+        .action-btns { display: flex; gap: 8px; }
+        .action-btn { width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .action-btn.edit { background: rgba(37,99,235,0.1); color: var(--primary); }
+        .action-btn.delete { background: rgba(239,68,68,0.1); color: var(--danger); }
+        .action-btn.view { background: rgba(16,185,129,0.1); color: var(--secondary); }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 70px; }
+            .sidebar-header h2, .nav-item span { display: none; }
+            .main-content { margin-left: 70px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-grid .full-width { grid-column: span 1; }
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-hospital-user"></i>
+                <h1>MediCare HMS</h1>
+                <p>Hospital Management System</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" value="admin@medicare.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" value="admin123" required>
+                </div>
+                <div class="form-group">
+                    <label>Login As</label>
+                    <select id="loginRole">
+                        <option value="admin">Administrator</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="nurse">Nurse</option>
+                        <option value="receptionist">Receptionist</option>
+                        <option value="pharmacist">Pharmacist</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            <p style="text-align: center; margin-top: 20px; color: var(--gray-500); font-size: 13px;">
+                Demo: Use pre-filled credentials
+            </p>
+        </div>
+    </div>
 
-<div class="auth-container">
-<div class="auth-box">
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-hospital-user"></i>
+                <h2>MediCare</h2>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-th-large"></i><span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-page="patients">
+                    <i class="fas fa-user-injured"></i><span>Patients</span>
+                </div>
+                <div class="nav-item" data-page="appointments">
+                    <i class="fas fa-calendar-check"></i><span>Appointments</span>
+                </div>
+                <div class="nav-item" data-page="doctors">
+                    <i class="fas fa-user-md"></i><span>Doctors</span>
+                </div>
+                <div class="nav-item" data-page="records">
+                    <i class="fas fa-file-medical"></i><span>Medical Records</span>
+                </div>
+                <div class="nav-item" data-page="billing">
+                    <i class="fas fa-file-invoice-dollar"></i><span>Billing</span>
+                </div>
+                <div class="nav-item" data-page="pharmacy">
+                    <i class="fas fa-pills"></i><span>Pharmacy</span>
+                </div>
+                <div class="nav-item" data-page="logout">
+                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                </div>
+            </div>
+        </div>
 
-<h1>MediCare HMS</h1>
-<p>Hospital Management System</p>
+        <div class="main-content">
+            <div class="header">
+                <div class="header-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Welcome back! Here's your hospital overview.</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <div class="user-info">
+                            <span id="userName">Administrator</span>
+                            <small id="userRole">Admin</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<!-- LOGIN -->
-<div id="loginPage" class="auth-content active">
-<form id="loginForm">
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="loginEmail" required>
-</div>
+            <div class="content-area" id="contentArea">
+                <!-- Dynamic content loads here -->
+            </div>
+        </div>
+    </div>
 
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="loginPassword" required>
-</div>
+    <!-- Modal -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal Title</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content -->
+            </div>
+            <script>
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-<button class="btn">Login</button>
-</form>
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    const role = document.getElementById("loginRole").value;
 
-<p style="margin-top:15px;text-align:center;">
-Don't have account? 
-<span class="link" id="openRegister">Register</span>
-</p>
-</div>
+    // Demo credentials (kama ulivyoandika kwenye form)
+    if (email === "admin@medicare.com" && password === "admin123") {
+        // Ficha login
+        document.getElementById("loginPage").style.display = "none";
 
-<!-- REGISTER -->
-<div id="registerPage" class="auth-content">
-<form id="registerForm">
-<div class="form-group">
-<label>Full Name</label>
-<input type="text" id="regName" required>
-</div>
+        // Onyesha dashboard
+        document.getElementById("dashboard").style.display = "block";
 
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="regEmail" required>
-</div>
+        // Set user info
+        document.getElementById("userName").innerText = "Administrator";
+        document.getElementById("userRole").innerText = role;
+        document.getElementById("userAvatar").innerText = "A";
 
-<div class="form-group">
-<label>Phone</label>
-<input type="text" id="regPhone" required>
-</div>
-
-<div class="form-group">
-<label>Password</label>
-<input type="password" id="regPassword" required>
-</div>
-
-<div class="form-group">
-<label>Role</label>
-<select id="regRole" required>
-<option value="">Select role</option>
-<option value="admin">Admin</option>
-<option value="doctor">Doctor</option>
-<option value="nurse">Nurse</option>
-</select>
-</div>
-
-<button class="btn">Register</button>
-</form>
-
-<p style="margin-top:15px;text-align:center;">
-Already have account? 
-<span class="link" id="openLogin">Login</span>
-</p>
-</div>
-
-<!-- OTP -->
-<div id="otpPage" class="auth-content">
-<div class="form-group">
-<label>Enter OTP</label>
-<input type="text" id="otpInput">
-</div>
-<button class="btn" id="verifyOtp">Verify</button>
-</div>
-
-</div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-<h2>Welcome <span id="userName"></span></h2>
-<p>You are logged in successfully ✅</p>
-</div>
-
-<script>
-let users = JSON.parse(localStorage.getItem("users")) || [];
-let tempUser = null;
-let generatedOTP = null;
-
-/* DEMO USER */
-if(users.length === 0){
-users.push({
-email:"admin@medicare.com",
-password:"admin123",
-name:"Admin"
+    } else {
+        alert("Invalid login credentials!");
+    }
 });
-localStorage.setItem("users",JSON.stringify(users));
-}
-
-/* SWITCH PAGES */
-const loginPage = document.getElementById("loginPage");
-const registerPage = document.getElementById("registerPage");
-const otpPage = document.getElementById("otpPage");
-
-document.getElementById("openRegister").onclick = ()=>{
-loginPage.classList.remove("active");
-registerPage.classList.add("active");
-};
-
-document.getElementById("openLogin").onclick = ()=>{
-registerPage.classList.remove("active");
-loginPage.classList.add("active");
-};
-
-/* REGISTER */
-document.getElementById("registerForm").onsubmit = (e)=>{
-e.preventDefault();
-
-tempUser = {
-name: regName.value,
-email: regEmail.value,
-phone: regPhone.value,
-password: regPassword.value,
-role: regRole.value
-};
-
-generatedOTP = Math.floor(100000 + Math.random()*900000);
-
-alert("OTP: " + generatedOTP); // demo
-
-registerPage.classList.remove("active");
-otpPage.classList.add("active");
-};
-
-/* VERIFY OTP */
-document.getElementById("verifyOtp").onclick = ()=>{
-if(otpInput.value == generatedOTP){
-users.push(tempUser);
-localStorage.setItem("users",JSON.stringify(users));
-alert("Registered successfully!");
-
-otpPage.classList.remove("active");
-loginPage.classList.add("active");
-}else{
-alert("Wrong OTP");
-}
-};
-
-/* LOGIN */
-document.getElementById("loginForm").onsubmit = (e)=>{
-e.preventDefault();
-
-let email = loginEmail.value;
-let password = loginPassword.value;
-
-let user = users.find(u=>u.email===email && u.password===password);
-
-if(user){
-document.querySelector(".auth-container").style.display="none";
-document.getElementById("dashboard").style.display="block";
-document.getElementById("userName").innerText=user.name;
-}else{
-alert("Invalid login");
-}
-};
-</script>
-
-</body>
-</html>
+            </script>
+            
